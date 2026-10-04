@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#151914">
+    <meta name="description" content="Поиск по руководству, материалам CASSIE и справочникам Mandarin MediumRP.">
+    <title>Mandarin | Оперативная база</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="assets/site-config.js"></script>
+    <script src="assets/department-data.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <main class="login-page" id="login-page">
+      <section class="login-story" aria-label="Оперативная база Mandarin">
+        <a class="wordmark" href="#login" aria-label="Mandarin">
+          <img class="brand-image" src="assets/brand.png" alt="">
+          <span>MANDARIN<span class="wordmark-sub">ОПЕРАТИВНАЯ БАЗА</span></span>
+        </a>
+        <div class="story-copy">
+          <span class="eyebrow"><span class="live-dot"></span> MEDIUM ROLEPLAY</span>
+          <h1>Все рабочие материалы.<br>В одном месте.</h1>
+          <p>Регламент CASSIE, руководство и справочники отдела. Находите нужное поиском, а не по папкам.</p>
+        </div>
+        <div class="story-meta"><span>ВХОД ТОЛЬКО ДЛЯ ПЕРСОНАЛА</span><span>GOOGLE <span aria-hidden="true">+</span> STEAM</span></div>
+      </section>
+
+      <section class="login-panel" id="login" aria-labelledby="login-heading">
+        <span class="panel-kicker">ЗАКРЫТАЯ БАЗА ЗНАНИЙ</span>
+        <h2 id="login-heading">Вход в систему</h2>
+        <p class="panel-description">Для входа подтвердите обе учётные записи. При первом входе профиль регистрируется автоматически.</p>
+        <div class="provider-buttons">
+          <button class="provider-button google-button" type="button" data-provider="google" aria-describedby="auth-status">
+            <img src="assets/google.png" alt="" width="23" height="23">
+            <span>Продолжить с Google</span>
+            <span class="provider-number">01</span>
+          </button>
+          <button class="provider-button steam-button" type="button" data-provider="steam" aria-describedby="auth-status">
+            <img src="assets/steam.jpg" alt="" width="25" height="25">
+            <span>Продолжить со Steam</span>
+            <span class="provider-number">02</span>
+          </button>
+        </div>
+        <p class="auth-status" id="auth-status" aria-live="polite" role="status">Для защищённой регистрации нужно сначала подключить сервер авторизации.</p>
+        <details class="setup-details" id="setup-details">
+          <summary>Как включить вход и регистрацию</summary>
+          <div class="setup-copy">
+            <p>GitHub Pages публикует только статические файлы: он не проверяет Google и Steam и не хранит учётные записи. Здесь вход намеренно закрыт, а не заменён небезопасной имитацией.</p>
+            <ol>
+              <li>Разверните HTTPS-сервер авторизации с базой данных пользователей и защищёнными сессиями.</li>
+              <li>Настройте Google OAuth в Google Cloud Console и Steam OpenID 2.0. Секреты и Steam API key храните только в переменных окружения сервера.</li>
+              <li>После успешной проверки обоих профилей автоматически создайте пользователя и разрешите доступ. Привяжите HTTPS backend к этому сайту.</li>
+            </ol>
+            <a class="setup-link" href="https://github.com/den09hop87-hub/site6#настройка-регистрации" target="_blank" rel="noreferrer">Подробная инструкция по настройке <span aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <p class="privacy-note">Пароли и ключи на этой странице не запрашиваются.</p>
+      </section>
+    </main>
+
+    <div class="application" id="application" hidden>
+      <header class="topbar">
+        <a class="app-brand" href="#top" aria-label="Mandarin: начало">
+          <img src="assets/brand.png" alt="" width="38" height="38">
+          <span><strong>MANDARIN</strong><small>ОПЕРАТИВНАЯ БАЗА</small></span>
+        </a>
+        <div class="topbar-search">
+          <label class="sr-only" for="search-input">Поиск по базе</label>
+          <span class="search-mark" aria-hidden="true">⌕</span>
+          <input id="search-input" type="search" autocomplete="off" placeholder="Имя, команда, документ или фраза…">
+          <button class="shortcut" id="search-shortcut" type="button" aria-label="Перейти к поиску">/</button>
+        </div>
+        <div class="account-chip"><span class="live-dot"></span><span id="account-name">Проверенный профиль</span></div>
+      </header>
+      <nav class="view-nav" aria-label="Разделы базы" role="tablist">
+        <button class="view-tab is-active" type="button" data-view="cassie" role="tab" aria-selected="true">CASSIE<span id="cassie-count">03</span></button>
+        <button class="view-tab" type="button" data-view="guide" role="tab" aria-selected="false">Руководство</button>
+        <button class="view-tab" type="button" data-view="violators" role="tab" aria-selected="false">Нарушители</button>
+        <button class="view-tab" type="button" data-view="veterans" role="tab" aria-selected="false">Ветераны</button>
+        <button class="view-tab" type="button" data-view="all" role="tab" aria-selected="false">Вся база</button>
+        <span class="nav-spacer"></span>
+        <button class="logout-button" id="logout-button" type="button" aria-label="Выйти из профиля" title="Выйти из профиля">Выйти <span aria-hidden="true">↗</span></button>
+      </nav>
+      <main class="workspace" id="top">
+        <section class="section-heading">
+          <div class="heading-copy">
+            <span class="eyebrow" id="section-eyebrow">ОПЕРАТОРСКАЯ · РЕГЛАМЕНТ</span>
+            <h1 id="section-title">CASSIE</h1>
+            <p id="section-description">Утверждённые материалы для работы с системой оповещения.</p>
+          </div>
+          <div class="result-total"><span id="result-count">03</span><span id="result-label">документа</span></div>
+        </section>
+        <aside class="data-notice" id="cassie-notice" hidden>
+          <span class="notice-mark" aria-hidden="true">i</span>
+          <p>В загруженном архиве есть регламенты CASSIE, но нет списка объявлений с примера. Показаны только исходные утверждённые материалы.</p>
+        </aside>
+        <div class="filter-bar" id="filter-bar" aria-label="Фильтр по разделам"></div>
+        <section class="entry-list" id="entry-list" aria-label="Результаты поиска" aria-live="polite"></section>
+        <p class="workspace-footnote">Поиск учитывает содержание документов, Steam ID и категории. <kbd>/</kbd> — быстрый поиск.</p>
+      </main>
+    </div>
+
+    <dialog class="entry-dialog" id="entry-dialog" aria-labelledby="dialog-title">
+      <form method="dialog"><button class="dialog-close" aria-label="Закрыть">×</button></form>
+      <span class="eyebrow" id="dialog-category"></span>
+      <h2 id="dialog-title"></h2>
+      <p class="dialog-body" id="dialog-body"></p>
+      <a class="source-link" id="dialog-source" target="_blank" rel="noreferrer" hidden>Открыть исходный документ ↗</a>
+    </dialog>
+  </body>
+</html>
