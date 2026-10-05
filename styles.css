@@ -53,6 +53,8 @@ button:focus-visible, input:focus-visible, summary:focus-visible, a:focus-visibl
 .provider-buttons { display: grid; gap: 10px; }
 .provider-button { display: grid; width: 100%; min-height: 58px; grid-template-columns: 27px 1fr auto; align-items: center; gap: 12px; padding: 0 15px; border: 1px solid var(--line-bright); border-radius: 5px; background: #262d25; text-align: left; font-size: 13px; font-weight: 600; cursor: pointer; transition: border-color .17s, background .17s, transform .17s; }
 .provider-button:hover { transform: translateY(-1px); border-color: var(--accent); background: #30382d; }
+.provider-button:disabled { border-color: var(--line); background: #20251f; color: #8c9385; cursor: not-allowed; opacity: .68; }
+.provider-button:disabled:hover { transform: none; border-color: var(--line); }
 .provider-button img { border-radius: 4px; object-fit: contain; }
 .google-button img { background: #fff; }
 .provider-number { color: #858e7f; font: 400 10px/1 var(--mono); }

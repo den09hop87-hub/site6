@@ -32,16 +32,16 @@
       <section class="login-panel" id="login" aria-labelledby="login-heading">
         <span class="panel-kicker">ЗАКРЫТАЯ БАЗА ЗНАНИЙ</span>
         <h2 id="login-heading">Вход в систему</h2>
-        <p class="panel-description">Для входа подтвердите обе учётные записи. При первом входе профиль регистрируется автоматически.</p>
+        <p class="panel-description">Последовательно подтвердите учётные записи Google и Steam. При первом входе профиль зарегистрируется автоматически.</p>
         <div class="provider-buttons">
           <button class="provider-button google-button" type="button" data-provider="google" aria-describedby="auth-status">
             <img src="assets/google.png" alt="" width="23" height="23">
-            <span>Продолжить с Google</span>
+            <span class="provider-label">Подтвердить Google</span>
             <span class="provider-number">01</span>
           </button>
-          <button class="provider-button steam-button" type="button" data-provider="steam" aria-describedby="auth-status">
+          <button class="provider-button steam-button" type="button" data-provider="steam" aria-describedby="auth-status" disabled>
             <img src="assets/steam.jpg" alt="" width="25" height="25">
-            <span>Продолжить со Steam</span>
+            <span class="provider-label">Затем подтвердить Steam</span>
             <span class="provider-number">02</span>
           </button>
         </div>

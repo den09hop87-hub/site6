@@ -8,6 +8,7 @@
   const filterBar = document.getElementById("filter-bar");
   const dialog = document.getElementById("entry-dialog");
   const authApiUrl = String(config.authApiUrl || "").replace(/\/+$/, "");
+  let csrfToken = "";
 
   const headings = {
     cassie: ["ОПЕРАТОРСКАЯ · РЕГЛАМЕНТ", "CASSIE", "Утверждённые материалы для работы с системой оповещения."],
@@ -32,6 +33,39 @@
   const normalize = (value) => String(value || "").toLocaleLowerCase("ru").replaceAll("ё", "е").replace(/[^\p{L}\p{N}]+/gu, " ").trim();
   let activeView = "cassie";
   let activeGroup = "";
+
+  let callbackMessage = "";
+
+  function updateLoginProgress({ google = false, steam = false, message = "" } = {}) {
+    const googleButton = document.querySelector('[data-provider="google"]');
+    const steamButton = document.querySelector('[data-provider="steam"]');
+    googleButton.disabled = google;
+    steamButton.disabled = !google || steam;
+    googleButton.querySelector(".provider-label").textContent = google ? "Google подтверждён" : "Подтвердить Google";
+    steamButton.querySelector(".provider-label").textContent = steam ? "Steam подтверждён" : "Затем подтвердить Steam";
+
+    status.textContent = message || callbackMessage || (google
+      ? "Google подтверждён. Теперь подтвердите привязанный аккаунт Steam."
+      : "Сначала подтвердите Google. После этого откроется вход через Steam.");
+  }
+
+  const authErrors = {
+    google_cancelled: "Вход через Google отменён. Можно попробовать ещё раз.",
+    invalid_google_state: "Не удалось подтвердить запрос Google. Начните вход ещё раз.",
+    google_verification_failed: "Google не подтвердил этот аккаунт. Попробуйте снова.",
+    google_required_first: "Сначала подтвердите Google, затем войдите через Steam.",
+    steam_state_expired: "Время входа Steam истекло. Начните подтверждение заново.",
+    steam_verification_failed: "Steam не подтвердил этот аккаунт. Попробуйте снова.",
+    accounts_already_linked: "Эта учётная запись уже связана с другим профилем.",
+  };
+  const callbackUrl = new URL(window.location.href);
+  if (callbackUrl.searchParams.get("auth") === "error") {
+    callbackMessage = authErrors[callbackUrl.searchParams.get("code")] || "Не удалось выполнить вход. Попробуйте ещё раз.";
+    status.textContent = callbackMessage;
+    callbackUrl.searchParams.delete("auth");
+    callbackUrl.searchParams.delete("code");
+    window.history.replaceState(null, "", `${callbackUrl.pathname}${callbackUrl.search}${callbackUrl.hash}`);
+  }
 
   function matchesView(item) {
     if (activeView === "cassie") return item.type === "guide" && /cassie|касси|кэсси/i.test(item.searchable);
@@ -178,7 +212,7 @@
         return;
       }
       const provider = button.dataset.provider === "google" ? "Google" : "Steam";
-      status.textContent = `${provider} пока не подключён: сначала настройте сервер авторизации. Читайте инструкцию ниже.`;
+      updateLoginProgress({ message: `${provider} пока не подключён. Добавьте публичный HTTPS-адрес Bot-Hosting сервера в assets/site-config.js.` });
       document.getElementById("setup-details").open = true;
     });
   });
@@ -194,9 +228,15 @@
   document.getElementById("logout-button").addEventListener("click", async () => {
     if (authApiUrl) {
       try {
-        await fetch(`${authApiUrl}/auth/logout`, { method: "POST", credentials: "include" });
+        const response = await fetch(`${authApiUrl}/auth/logout`, {
+          method: "POST",
+          credentials: "include",
+          headers: { "X-CSRF-Token": csrfToken },
+        });
+        if (!response.ok) throw new Error("Logout was rejected");
       } catch {
         status.textContent = "Не удалось связаться с сервером для завершения сессии.";
+        return;
       }
     }
     loginPage.hidden = false;
@@ -213,18 +253,28 @@
   });
 
   async function restoreSession() {
-    if (!authApiUrl) return;
+    if (!authApiUrl) {
+      updateLoginProgress();
+      return;
+    }
     try {
       const response = await fetch(`${authApiUrl}/auth/session`, { credentials: "include" });
-      if (!response.ok) return;
+      if (!response.ok) {
+        updateLoginProgress({ message: "Сервер входа не отвечает. Проверьте HTTPS-адрес backend и настройки доступа." });
+        return;
+      }
       const session = await response.json();
-      if (session.authenticated !== true || !session.google || !session.steam) return;
+      if (session.authenticated !== true || session.google !== true || session.steam !== true) {
+        updateLoginProgress({ google: session.google === true, steam: session.steam === true });
+        return;
+      }
+      csrfToken = session.csrf || "";
       document.getElementById("account-name").textContent = session.user?.name || "Проверенный профиль";
       loginPage.hidden = true;
       application.hidden = false;
       render();
     } catch {
-      status.textContent = "Сервер авторизации пока недоступен. Вход через оба сервиса обязателен.";
+      updateLoginProgress({ message: "Не удаётся проверить сессию. Убедитесь, что HTTPS backend разрешает этот сайт в CORS." });
     }
   }
 
